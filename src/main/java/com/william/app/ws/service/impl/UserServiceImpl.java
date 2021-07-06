@@ -1,13 +1,19 @@
 package com.william.app.ws.service.impl;
 
 import com.william.app.ws.io.entity.UserEntity;
-import com.william.app.ws.repository.UserRepository;
+import com.william.app.ws.io.repository.UserRepository;
 import com.william.app.ws.service.UserService;
 import com.william.app.ws.shared.Utils;
 import com.william.app.ws.shared.dto.UserDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private Utils utils;
+
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public UserDTO createUser(UserDTO user) {
@@ -30,7 +39,7 @@ public class UserServiceImpl implements UserService {
 
         String publicUserId = utils.generateUserId(30);
         userEntity.setUserId(publicUserId);
-        userEntity.setEncryptedPassword("test");
+        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
 
         UserEntity storedUserDetails = userRepository.save(userEntity);
 
@@ -38,5 +47,30 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(storedUserDetails, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public UserDTO getUser(String email) {
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
+        UserDTO returnValue = new UserDTO();
+        BeanUtils.copyProperties(userEntity, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByEmail(email);
+
+        if (userEntity == null) {
+            throw new UsernameNotFoundException(email);
+        }
+
+        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
     }
 }

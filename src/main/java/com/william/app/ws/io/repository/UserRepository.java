@@ -1,4 +1,4 @@
-package com.william.app.ws.repository;
+package com.william.app.ws.io.repository;
 
 import com.william.app.ws.io.entity.UserEntity;
 import org.springframework.data.repository.CrudRepository;
