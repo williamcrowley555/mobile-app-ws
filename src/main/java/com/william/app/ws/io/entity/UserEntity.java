@@ -27,7 +27,6 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String encryptedPassword;
 
-
     private String emailVerificationToken;
 
     @Column(nullable = false)

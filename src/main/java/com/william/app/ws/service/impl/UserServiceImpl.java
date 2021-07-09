@@ -1,10 +1,12 @@
 package com.william.app.ws.service.impl;
 
+import com.william.app.ws.exception.UserServiceException;
 import com.william.app.ws.io.entity.UserEntity;
 import com.william.app.ws.io.repository.UserRepository;
 import com.william.app.ws.service.UserService;
 import com.william.app.ws.shared.Utils;
 import com.william.app.ws.shared.dto.UserDTO;
+import com.william.app.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -69,12 +71,41 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUserId(userId);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException(userId);
+            throw new UsernameNotFoundException("User with ID: " + userId + " not found");
         }
 
         BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public UserDTO updateUser(String userId, UserDTO user) {
+        UserDTO returnValue = new UserDTO();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        userRepository.delete(userEntity);
     }
 
     @Override
