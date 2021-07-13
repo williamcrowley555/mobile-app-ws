@@ -5,6 +5,7 @@ import com.william.app.ws.service.UserService;
 import com.william.app.ws.shared.dto.UserDTO;
 import com.william.app.ws.ui.model.request.UserDetailsRequestModel;
 import com.william.app.ws.ui.model.response.*;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -39,8 +40,10 @@ public class UserController {
             throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
         }
 
-        UserDTO userDTO = new UserDTO();
-        BeanUtils.copyProperties(userDetails, userDTO);
+//        UserDTO userDTO = new UserDTO();
+//        BeanUtils.copyProperties(userDetails, userDTO);
+        ModelMapper modelMapper = new ModelMapper();
+        UserDTO userDTO = modelMapper.map(userDetails, UserDTO.class);
 
         UserDTO createdUser = userService.createUser(userDTO);
         BeanUtils.copyProperties(createdUser, returnValue);
