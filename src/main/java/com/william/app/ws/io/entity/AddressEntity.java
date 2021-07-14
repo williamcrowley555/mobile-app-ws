@@ -1,15 +1,38 @@
-package com.william.app.ws.shared.dto;
+package com.william.app.ws.io.entity;
 
-public class AddressDTO {
+import javax.persistence.*;
+import java.io.Serializable;
 
+@Entity(name = "addresses")
+public class AddressEntity implements Serializable {
+
+    private static final long serialVersionUID = 3785687645813045996L;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(nullable = false, length = 30)
     private String addressId;
+
+    @Column(nullable = false, length = 15)
     private String city;
+
+    @Column(nullable = false, length = 15)
     private String country;
+
+    @Column(nullable = false, length = 100)
     private String streetName;
+
+    @Column(nullable = false, length = 7)
     private String postalCode;
+
+    @Column(nullable = false, length = 10)
     private String type;
-    private UserDTO userDetails;
+
+    @ManyToOne
+    @JoinColumn(name = "users_id")
+    private UserEntity userDetails;
 
     public long getId() {
         return id;
@@ -67,11 +90,11 @@ public class AddressDTO {
         this.type = type;
     }
 
-    public UserDTO getUserDetails() {
+    public UserEntity getUserDetails() {
         return userDetails;
     }
 
-    public void setUserDetails(UserDTO userDetails) {
+    public void setUserDetails(UserEntity userDetails) {
         this.userDetails = userDetails;
     }
 }

@@ -1,23 +1,13 @@
-package com.william.app.ws.shared.dto;
+package com.william.app.ws.ui.model.response;
 
-public class AddressDTO {
+public class AddressRest {
 
-    private long id;
     private String addressId;
     private String city;
     private String country;
     private String streetName;
     private String postalCode;
     private String type;
-    private UserDTO userDetails;
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 
     public String getAddressId() {
         return addressId;
@@ -65,13 +55,5 @@ public class AddressDTO {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    public UserDTO getUserDetails() {
-        return userDetails;
-    }
-
-    public void setUserDetails(UserDTO userDetails) {
-        this.userDetails = userDetails;
     }
 }

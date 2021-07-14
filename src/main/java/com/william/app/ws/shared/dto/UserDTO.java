@@ -89,10 +89,6 @@ public class UserDTO implements Serializable {
         this.emailVerificationStatus = emailVerificationStatus;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     public List<AddressDTO> getAddresses() {
         return addresses;
     }
